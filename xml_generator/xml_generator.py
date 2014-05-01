@@ -31,32 +31,7 @@ class XmlGenerator():
     def _parse_json_object(self, data):
         self._parse_thread(data)
 
-    '''
-    <object id="0_24309637" type="button" x="0" y="0" r="0" s="8.2662896522647" class="circle">
-      <type>circle</type>
-      <size>
-        <w>800</w>
-        <h>800</h>
-      </size>
-      <meta>
-        <notModifiedByUser>from-template</notModifiedByUser>
-        <parentTemplate>blank-quick</parentTemplate>
-      </meta>
-      <layout>
-        <frametype value="SECTION"/>
-      </layout>
-    </object>
-    <object id="12_4" type="text" x="-0.9499999999999993" y="-2127.65" r="0" s="18.223636825997854" class="strong">
-      <height>27.59765625</height>
-      <width>220.4993900181616</width>
-      <p align="center">
-        <text><![CDATA[test xml]]></text>
-      </p>
-      <layout>
-        <layout-element role="title" parent-id="0_24309637"/>
-      </layout>
-    </object>
-    '''
+    # TODO omfg refactor
     def _parse_thread(self, data):
         if isinstance(data, dict):
             for key in data.keys():
