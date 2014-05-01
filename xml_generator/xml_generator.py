@@ -1,29 +1,39 @@
 
-import json
 from lxml import etree
+from prezi_xml_helpers import PreziXmlHelpers
 
 
-class JsonParser():
-    def __init__(self, json_data):
-        self.json_data = json_data
-        self.xml_data = etree.Element('root')
+class XmlGenerator():
+
+    def __init__(self, data):
+        self.data = data
+        self.xml_data = etree.Element('zuiprezi')
+        self.zui_table = etree.SubElement(self.xml_data, 'zui-table')
 
     def generate_xml(self):
-        self._parse_json_object(self.json_data)
+        self._initiate_base_xml()
+        self._parse_json_object(self.data)
         return etree.tostring(self.xml_data)
 
-    def _parse_json_object(self, json_data):
-        _json_data = json.loads(self.json_data)
-        self._parse_thread(_json_data, self.xml_data)
+    def _initiate_base_xml(self):
+        PreziXmlHelpers.generate_version_node(self.xml_data, 1)
+        PreziXmlHelpers.generate_autoplay_node(self.zui_table, '4000')
 
-    def _parse_thread(self, json_data, parent_node):
-        if isinstance(json_data, dict):
-            for key in json_data.keys():
-                sub_node = etree.SubElement(parent_node, "test_" + str(key))
-                if not isinstance(json_data[key], dict):
-                    sub_node.text = unicode(json_data[key])
-                self._parse_thread(json_data[key], sub_node)
+        # TODO figure out a bound algorithm
+        # TODO make this more descriptive
+        PreziXmlHelpers.generate_bounds_node(self.zui_table, (0.0, 0.0), (100.0, 100.0))
+
+    def _parse_json_object(self, data):
+        self._parse_thread(data, self.zui_table)
+
+    def _parse_thread(self, data, parent_node):
+        if isinstance(data, dict):
+            for key in data.keys():
+                sub_node = etree.SubElement(parent_node, 'test_' + str(key))
+                if not isinstance(data[key], dict):
+                    sub_node.text = unicode(data[key])
+                self._parse_thread(data[key], sub_node)
 
 if __name__ == '__main__':
-    json_parser = JsonParser('{"0":{"child":{"0":"testy","1":"test"}}}')
-    print json_parser.generate_xml()
+    xml_generator = XmlGenerator({"0": {"child": {"0": "testy", "1": "test"}}})
+    print xml_generator.generate_xml()
