@@ -1,6 +1,5 @@
 import urllib2
 from bs4 import BeautifulSoup
-import simplejson
 
 
 class ParseReddit(object):
@@ -8,9 +7,8 @@ class ParseReddit(object):
     def __init__(self, reddit_url):
         self.reddit_url = reddit_url
 
-    def get_json(self):
-        dict = self.parse_url()
-        return simplejson.dumps(dict, sort_keys=True, indent=4 * ' ')
+    def get_reddit_dict(self):
+        return self.parse_url()
 
     def parse_url(self):
         soup_parsed_data = self.get_html_soup_data()
