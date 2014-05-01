@@ -8,7 +8,7 @@ class PreziXmlHelpers(object):
     def generate_autoplay_node(xml_node, delay):
         autoplay_node = etree.SubElement(xml_node, 'autoplay')
         delay_node = etree.SubElement(autoplay_node, 'delay')
-        delay_node.text = delay
+        delay_node.text = str(delay)
 
     @staticmethod
     def generate_bounds_node(xml_node, bounds, dimensions):
