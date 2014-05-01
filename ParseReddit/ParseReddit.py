@@ -15,7 +15,7 @@ class ParseReddit(object):
     def parse_url(self):
         soup_parsed_data = self.get_html_soup_data()
         commentarea = self.get_comment_thread(soup_parsed_data)
-        return self.get_entries(commentarea)
+        return self.get_comments(commentarea)
 
     def get_html_soup_data(self):
         response = urllib2.urlopen(self.reddit_url)
@@ -26,21 +26,33 @@ class ParseReddit(object):
     def get_comment_thread(self, thread, thread_type='commentarea'):
         return thread.find("div", class_=thread_type)
 
-    def get_entries(self, thread):
+    def get_comments(self, thread):
         if thread.contents:
-            dict = {}
-            i = 0
-            commentstable = thread.find("div", class_="sitetable")
-            for comments in commentstable.find_all("div", class_="comment", recursive=False):
-                entry = comments.find("div", class_="entry").find(
-                    "div", class_="md").get_text('\n').rstrip().encode('utf-8')
-                child = self.get_comment_thread(comments, 'child')
-                dict[i] = {'entry': entry, 'child': self.get_entries(child)}
-                i += 1
-            return dict
+            return self.parse_thread(thread)
         else:
             return None
 
+    def parse_thread(self, thread):
+        dict = {}
+        i = 0
+        comments = self.get_comments_table(thread)
+        for comment in comments:
+            entry, child = self.parse_single_comment(comment)
+            dict[i] = {'entry': entry, 'child': self.get_comments(child)}
+            i += 1
+        return dict
+
+    def get_comments_table(self, thread):
+        site_table = thread.find("div", class_="sitetable")
+        comments_table = site_table.find_all("div", class_="comment", recursive=False)
+        return comments_table
+
+    def parse_single_comment(self, thread_entry):
+            entry = thread_entry.find("div", class_="entry").find(
+                "div", class_="md").get_text('\n').rstrip().encode('utf-8')
+            child = self.get_comment_thread(thread_entry, 'child')
+            return entry, child
+
 if __name__ == '__main__':
-    reddit_parser = ParseReddit('http://www.reddit.com/r/gaming/comments/24f97g/tranquility/')
+    reddit_parser = ParseReddit('http://www.reddit.com/r/programming/comments/24frw0/et_the_extraterrestrial1982_atari_2600_source_code/')
     print reddit_parser.get_json()
