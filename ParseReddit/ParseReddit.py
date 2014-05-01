@@ -52,7 +52,3 @@ class ParseReddit(object):
                 "div", class_="md").get_text('\n').rstrip().encode('utf-8')
             child = self.get_comment_thread(thread_entry, 'child')
             return entry, child
-
-if __name__ == '__main__':
-    reddit_parser = ParseReddit('http://www.reddit.com/r/programming/comments/24frw0/et_the_extraterrestrial1982_atari_2600_source_code/')
-    print reddit_parser.get_json()
