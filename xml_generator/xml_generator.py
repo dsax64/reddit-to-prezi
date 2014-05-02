@@ -55,7 +55,3 @@ class XmlGenerator():
                              'center')
                     self.counter += 1
                 self._parse_thread(thread[key])
-
-if __name__ == '__main__':
-    xml_generator = XmlGenerator({"0": {"child": {"0": {"child": {}, "entry": "test text 10"}, "1": {"child": {}, "entry": "test"}}, "entry": "test text 00"}})
-    print xml_generator.generate_xml()
